@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using ProcessController.Data;
 using ProcessController.Interfaces;
 using ProcessController.Services;
 
