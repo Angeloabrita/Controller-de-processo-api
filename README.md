@@ -8,4 +8,5 @@ Este projeto é uma API REST simples que fornece indicadores de performance, qua
 Treinar implementação do Entity Framework e o uso do padrão Repository
 
 #TO DO
-Implementar relacionamento e queries, instanciar o ManagerIndicator para converter valores antes de cada POST 
+Implementar relacionamento e queries, injetar o ```IndicatorCalcService``` para converter valores antes de cada POST 
+
