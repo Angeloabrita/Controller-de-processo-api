@@ -22,6 +22,7 @@ namespace ProcessController.Data
         public DbSet<Perfomance> Perfomance { get; set;}
         public DbSet<Process> Processs { get; set;}
         public DbSet<Quality> Quality { get; set; }
+        public DbSet<ProcessController.Model.ProcessControl> ProcessControl { get; set; } = default!;
 
     }
 }

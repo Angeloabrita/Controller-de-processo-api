@@ -5,7 +5,7 @@ namespace ProcessController.Services
     /// <summary>
     /// Class that implements calculations for availability, quality, performance, and OEE indicators.
     /// </summary>
-    public class IndicatorCalc : IAvaibleCalc, IOeeCalc, IPerformanceCalc, IQualityCalc
+    public class IndicatorCalcService : IAvaibleCalc, IOeeCalc, IPerformanceCalc, IQualityCalc
     {
         /// <summary>
         /// Calculates the OEE (Overall Equipment Effectiveness) based on availability, performance, and quality parameters.
