@@ -1,44 +1,44 @@
-﻿using ProcessController.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using ProcessController.Data;
 using ProcessController.Model;
 using ProcessController.Services.IRepository;
 
 namespace ProcessController.Services.Repository
 {
-    public class UnitOfWork : IUnitOfWork, IDisposable
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _context;
-        private readonly ILogger _logger;
+        private bool _disposed = false;
 
-        public IAvailabilityRepository? Avaibles { get; private set; }
-        public IOeeRepository? Oee {  get;  set; }
-        public IPerfomanceRepository? Perfomance { get;  set; }
-
-        public IProcessControlRepository? ProcessControl {  get; set; }
-
-        public IProcessRepository? Process {  get;  set; }
-
-        public IQualityRepository? Quality { get;  set; }
-
-        
-
-        public UnitOfWork(AppDbContext context, ILogger logger, ILoggerFactory loggerFactory)
+        public UnitOfWork(AppDbContext context)
         {
             _context = context;
-            _logger = loggerFactory.CreateLogger("logs");
-
-            
-
         }
 
-        public async Task CompletAsync()
+        public DbContext Context => _context;
+
+        public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
         }
 
         public void Dispose()
         {
-            _context.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+
+                _disposed = true;
+            }
+        }
     }
 }

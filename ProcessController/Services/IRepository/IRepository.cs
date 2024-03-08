@@ -1,16 +1,15 @@
-﻿namespace ProcessController.Services.IRepository
+﻿using Microsoft.AspNetCore.Mvc;
+using ProcessController.Model;
+
+namespace ProcessController.Services.IRepository
 {
     public interface IRepository<T> where T : class
     {
-
-        Task<IEnumerable<T>> All(); // Task is a type that represents an asynchronous operation that can return a value
-        Task<T> GetById(int id);
-
-        Task<bool> Add(T entity); // returns true if successful
-
-        Task<bool> Delete(int id);
-
-        Task<bool> Upsert(T entity);
+        public Task<ActionResult<IEnumerable<T>>> Get();
+        public Task<ActionResult<T>> GetById(int id);
+        public Task<ActionResult<T>> Create(T entity);
+        public Task<IActionResult> Update(int id, T entity);
+        public Task<IActionResult> Delete(int id);
     }
 
 }

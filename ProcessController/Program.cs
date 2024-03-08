@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using ProcessController.Data;
 using ProcessController.Interfaces;
 using ProcessController.Services;
+using ProcessController.Services.IRepository;
+using ProcessController.Services.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 var app = builder.Build();

@@ -1,15 +1,10 @@
-﻿namespace ProcessController.Services.IRepository
-{
-    public interface IUnitOfWork
-    {
-        IAvailabilityRepository AvailabilityRepository { get; }
-        IOeeRepository OeeRepository { get; }
-        IPerfomanceRepository PerfomanceRepository { get; }
-        IProcessControlRepository ProcessControlRepository { get; }
-        IProcessRepository ProcessRepository { get; }
-        
-        IQualityRepository QualityRepository { get; }
+﻿using Microsoft.EntityFrameworkCore;
 
-        Task ConCompleteAsync();
+namespace ProcessController.Services.IRepository
+{
+    public interface IUnitOfWork : IDisposable
+    {
+        DbContext Context { get; }
+        public Task SaveChangesAsync();
     }
 }

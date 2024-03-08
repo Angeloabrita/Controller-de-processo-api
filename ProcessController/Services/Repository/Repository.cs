@@ -1,84 +1,91 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProcessController.Data;
+using ProcessController.Model;
 using ProcessController.Services.IRepository;
 
 namespace ProcessController.Services.Repository
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public abstract class Repository<T> : ControllerBase, IRepository<T> where T : class
     {
-        protected AppDbContext _context;
+        protected readonly DbContext _context;
         protected DbSet<T> dbSet;
-        protected readonly ILogger _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
-        // constructor will take the context and logger factory as parameters
-        public Repository(
-            AppDbContext context,
-            ILogger logger
-        )
+        public Repository(IUnitOfWork unitOfwork)
         {
-            _context = context;
-            _logger = logger;
-            this.dbSet = _context.Set<T>();
+            _unitOfWork = unitOfwork;
+            dbSet = _unitOfWork.Context.Set<T>();
         }
 
-        public virtual async Task<IEnumerable<T>> All() // virtual means that this method can be overriden by a class that inherits from this class
+        //Get Request
+        public async Task<ActionResult<IEnumerable<T>>> Get()
         {
-            return await dbSet.ToListAsync();
+            var data = await dbSet.ToListAsync();
+            return Ok(data);
         }
 
-        public virtual async Task<T> GetById(int id)
+        //Create Request
+        public async Task<ActionResult<T>> Create(T entity)
         {
+            dbSet.Add(entity);
+            await _unitOfWork.SaveChangesAsync();
+            return entity;
+        }
+
+        //grt by id
+        public async Task<ActionResult<T>> GetById(int id)
+        {
+            var entity = await dbSet.FindAsync(id);
+            if (entity == null)
+            {
+                return NotFound();
+            }
+            return entity;
+        }
+
+        //Update Request
+        public async Task<IActionResult> Update(int id, T entity)
+        {
+            if (entity == null)
+            {
+                return BadRequest();
+            }
+
+            var existingOrder = await dbSet.FindAsync(id);
+            if (existingOrder == null)
+            {
+                return NotFound();
+            }
+
+            _unitOfWork.Context.Entry(existingOrder).CurrentValues.SetValues(entity);
+
             try
             {
-                return await dbSet.FindAsync(id);
+                await _unitOfWork.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch (DbUpdateConcurrencyException)
             {
-                _logger.LogError(e, "Error getting entity with id {Id}", id);
-                return null;
+                throw;
             }
+
+            return NoContent();
         }
 
-        public virtual async Task<bool> Add(T entity)
+        //Delete Request
+        public async Task<IActionResult> Delete(int id)
         {
-            try
+            var data = await dbSet.FindAsync(id);
+            if (data == null)
             {
-                await dbSet.AddAsync(entity);
-                return true;
+                return NotFound();
             }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error adding entity");
-                return false;
-            }
+
+            dbSet.Remove(data);
+            await _unitOfWork.SaveChangesAsync();
+            return NoContent();
         }
 
-        public virtual async Task<bool> Delete(int id)
-        {
-            try
-            {
-                var entity = await dbSet.FindAsync(id);
-                if (entity != null)
-                {
-                    dbSet.Remove(entity);
-                    return true;
-                }
-                else
-                {
-                    _logger.LogWarning("Entity with id {Id} not found for deletion", id);
-                    return false;
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error deleting entity with id {Id}", id);
-                return false;
-            }
-        }
-
-
-        public Task<bool> Upsert(T entity)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
+}
