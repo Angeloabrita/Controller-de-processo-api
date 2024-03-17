@@ -4,6 +4,7 @@ using ProcessController.Interfaces;
 using ProcessController.Services;
 using ProcessController.Services.IRepository;
 using ProcessController.Services.Repository;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultValue")));
+
 
 
 var app = builder.Build();

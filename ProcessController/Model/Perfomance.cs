@@ -4,7 +4,9 @@
     {
         public int Id { get; set; }
         public DateTime DateTime { get; set; }
-        public Process ProcessID { get; set; }
         public required float PerfomanceVal { get; set; }
+
+        public required int ProcessId { get; set; }
+        public required Process Process { get; set; }
     }
 }
