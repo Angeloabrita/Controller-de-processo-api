@@ -9,10 +9,9 @@ namespace ProcessController.Data
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-             
         }
 
-       
+
 
         public DbSet<Availability> Availability { get; set; }
         public DbSet<Oee> Oee { get; set; }
