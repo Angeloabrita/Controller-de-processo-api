@@ -8,6 +8,7 @@ using ProcessController.Model;
 using ProcessController.Services;
 using ProcessController.Services.IRepository;
 using ProcessController.Services.Repository;
+using OeeCalculator;
 
 namespace ProcessController.Controllers
 {

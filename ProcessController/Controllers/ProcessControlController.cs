@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 
 using ProcessController.Model;
-
+using OeeCalculator;
 using ProcessController.Services.IRepository;
 using ProcessController.Services.Repository;
+using static Microsoft.AspNetCore.Razor.Language.TagHelperMetadata;
 
 namespace ProcessController.Controllers
 {
@@ -61,6 +62,7 @@ namespace ProcessController.Controllers
         public async Task<ActionResult<ProcessControl>> CreateProcessControl(ProcessControl processControl)
         {
             await _processRepository.Create(processControl);
+
 
             return CreatedAtAction("GetProcessControl", new { id = processControl.Id }, processControl);
         }
